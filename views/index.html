@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <title>Directory listing of <?php echo $lister->getListedPath(); ?></title>
+    <link rel="shortcut icon" href="/static/img/folder.png">
+
+    <!-- STYLES -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- SCRIPTS -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="/static/js/directorylister.js"></script>
+
+
+    <!-- FONTS -->
+
+    <!-- META -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+
+    <style>
+        /* ---------------------------------------------------------------------------------------------- */
+        /* -----| GENERAL |------------------------------------------------------------------------------ */
+        /* ---------------------------------------------------------------------------------------------- */
+
+        body {
+            padding: 70px 0 0;
+        }
+
+        body.breadcrumb-fixed {
+            padding-top: 56px;
+        }
+
+        .container {
+            max-width: 960px;
+        }
+
+
+        /* -------------------------------------------------------------------------- */
+        /* -----| HEADER |----------------------------------------------------------- */
+        /* -------------------------------------------------------------------------- */
+
+        #page-navbar .navbar-text {
+            display: block;
+            float: left;
+            font-family: 'Cutive Mono', monospace, serif;
+            max-width: 80%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+
+        /* ---------------------------------------------------------------------------------------------- */
+        /* -----| DIRECTORY LISTER |--------------------------------------------------------------------- */
+        /* ---------------------------------------------------------------------------------------------- */
+
+        #directory-list-header {
+            font-family: 'Cutive Mono', monospace, serif;
+            font-weight: bold;
+            padding: 10px 15px;
+        }
+
+        #directory-listing {
+            font-family: 'Cutive Mono', monospace, serif;
+        }
+
+        #directory-listing li {
+            position: relative;
+        }
+
+        .file-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-name i {
+            color: #555;
+        }
+
+        .file-info-button,
+        .web-link-button {
+            display: inline-block;
+            cursor: pointer;
+            margin-left: 100%;
+            padding: 6px 10px !important;
+            position: absolute !important;
+            top: 4px;
+        }
+
+        .web-link-button i,
+        .file-info-button i {
+            color: #999;
+        }
+
+
+        /* ---------------------------------------------------------------------------------------------- */
+        /* -----| FOOTER |------------------------------------------------------------------------------- */
+        /* ---------------------------------------------------------------------------------------------- */
+
+        .footer {
+            margin: 20px;
+            text-align: center;
+        }
+
+
+        /* ---------------------------------------------------------------------------------------------- */
+        /* -----| CHECKSUM MODAL |----------------------------------------------------------------------- */
+        /* ---------------------------------------------------------------------------------------------- */
+
+        #file-info {
+            margin: 0;
+        }
+
+        #file-info .table-title {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        #file-info .md5-hash,
+        #file-info .sha1-hash {
+            font-family: 'Cutive Mono', monospace, serif;
+        }
+
+
+        /* -------------------------------------------------------------------------- */
+        /* -----| RESPONSIVE |------------------------------------------------------- */
+        /* -------------------------------------------------------------------------- */
+
+        @media (max-width: 767px) {
+
+            .navbar-nav {
+                float: left;
+                margin: 0;
+                padding-bottom: 0;
+                padding-top: 0;
+            }
+
+            .navbar-nav > li {
+                float: left;
+            }
+
+            .navbar-nav > li > a {
+                padding-bottom: 15px;
+                padding-top: 15px;
+            }
+
+            .navbar-right {
+                float: right !important;
+            }
+
+            #page-navbar .navbar-text {
+                margin-left: 15px;
+                margin-right: 15px;
+                max-width: 75%;
+            }
+
+            .file-info-button {
+                display: none !important;
+            }
+
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+
+<div id="page-navbar" class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+
+        <p class="navbar-text">
+
+            <<< range .paths >>>
+            <<< if eq "/" .Path >>>
+                <a href="/">主页</a>
+            <<< else >>>
+                <a href="<<< .Path >>>"><<< .Name >>></a>
+            <<< end >>>
+            <span class="divider">/</span>
+            <<< end >>>
+        </p>
+
+        <div class="navbar-right">
+
+            <!--<ul id="page-top-nav" class="nav navbar-nav">-->
+                <!--<li>-->
+                    <!--<a href="javascript:void(0)" id="page-top-link">-->
+                        <!--<i class="fa fa-arrow-circle-up fa-lg"></i>-->
+                    <!--</a>-->
+                <!--</li>-->
+            <!--</ul>-->
+
+            <!--<ul id="page-top-download-all" class="nav navbar-nav">-->
+                <!--<li>-->
+                    <!--<a href="?zip=<?php echo $lister->getDirectoryPath(); ?>" id="download-all-link">-->
+                        <!--<i class="fa fa-download fa-lg"></i>-->
+                    <!--</a>-->
+                <!--</li>-->
+            <!--</ul>-->
+
+        </div>
+
+    </div>
+</div>
+
+<div id="page-content" class="container">
+
+
+    <<< if .Messages >>>
+        <<< range .Messages >>>
+            <div class="alert alert-<<< .Type >>>">
+                <<< .Text >>>
+                <a class="close" data-dismiss="alert" href="#">&times;</a>
+            </div>
+        <<< end >>>
+    <<< end >>>
+
+    <div id="directory-list-header">
+        <div class="row">
+            <div class="col-md-7 col-sm-6 col-xs-10">文件</div>
+            <div class="col-md-2 col-sm-2 col-xs-2 text-right">大小</div>
+            <div class="col-md-3 col-sm-4 hidden-xs text-right">Last Modified</div>
+        </div>
+    </div>
+
+    <ul id="directory-listing" class="nav nav-pills nav-stacked">
+
+        <<< range $index,$elem := .files >>>
+        <li  data-name="<<< $elem.Name >>>" data-href="<<< $elem.Path >>>">
+            <a href="<<<  $elem.Path >>>" class="clearfix" data-name="<<< $elem.Name >>>">
+                <div class="row">
+                                <span class="file-name col-md-7 col-sm-6 col-xs-9">
+                                    <<< if $elem.Isdir >>>
+                                        <i class="fa fa-folder fa-fw"></i>
+                                    <<< else >>>
+                                        <i class="fa <<< $elem.Type >>> fa-fw"></i>
+                                    <<< end >>>
+
+                                    <<< $elem.Name >>>
+                                </span>
+
+                    <span class="file-size col-md-2 col-sm-2 col-xs-3 text-right">
+                                    <<< if $elem.Isdir >>>
+                                        -
+                                    <<< else >>>
+                                        <<< $elem.Size >>>
+                                    <<< end >>>
+
+                                </span>
+
+                    <span class="file-modified col-md-3 col-sm-4 hidden-xs text-right">
+                                    <<< $elem.Modtime >>>
+                                </span>
+                </div>
+
+            </a>
+            <<< if $elem.Isdir >>>
+
+
+            <<< else >>>
+                <a href="javascript:void(0)" class="file-info-button">
+                    <i class="fa fa-info-circle"></i>
+                </a>
+            <<< end >>>
+
+        </li>
+        <<< end >>>
+
+
+
+    </ul>
+</div>
+
+<hr>
+
+<div class="footer">
+    Powered by, <a href="http://privatess.win/directorylistergo">Directory Lister Go</a>
+</div>
+
+
+<div id="file-info-modal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">{{modal_header}}</h4>
+            </div>
+
+            <div class="modal-body">
+
+                <table id="file-info" class="table table-bordered">
+                    <tbody>
+
+                    <tr>
+                        <td class="table-title">MD5</td>
+                        <td class="md5-hash">{{md5_sum}}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="table-title">SHA1</td>
+                        <td class="sha1-hash">制作中</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
