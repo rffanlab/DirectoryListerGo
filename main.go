@@ -198,9 +198,9 @@ func (c *MainController) ToServeFile()  {
 				if tmp.Path == "" {
 					tmp.Path = "/"
 				}else if tmp.Path == "/" {
-					tmp.Path = tmp.Path + thePaths[i]
+					tmp.Path = tmp.Path + thePaths[j]
 				}else {
-					tmp.Path = tmp.Path + "/" + thePaths[i]
+					tmp.Path = tmp.Path + "/" + thePaths[j]
 				}
 			}
 			tmp.Name = thePaths[i]
@@ -208,6 +208,7 @@ func (c *MainController) ToServeFile()  {
 			count += 1
 		}
 		fmt.Println(thePaths)
+		fmt.Println(pathlinks)
 		c.Data["paths"] = pathlinks
 
 		c.Data["files"] = files
